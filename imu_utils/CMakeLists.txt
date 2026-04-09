@@ -43,7 +43,8 @@ target_link_libraries(imu_an
         ${OpenCV_LIBS}
         ${CERES_LIBRARIES}
         ${Boost_LIBRARIES}
-        glog::glog  # 链接系统 glog，与 Ceres 保持一致
+        ${glog_LIBRARIES}
+        #glog::glog  # 链接系统 glog，与 Ceres 保持一致
 )
 
 ament_target_dependencies(imu_an
