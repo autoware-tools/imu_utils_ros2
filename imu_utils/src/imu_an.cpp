@@ -255,20 +255,22 @@ int main(int argc, char** argv)
     std::vector<double> gyro_d_z = gyr_z->getDeviation();
     std::vector<double> gyro_ts_z = gyr_z->getTimes();
 
+    std::cout << "****************************************" << std::endl;
+
     std::cout << "陀螺仪 X " << std::endl;
     imu::FitAllanGyr fit_gyr_x(gyro_v_x, gyro_ts_x, gyr_x->getFreq());
     std::cout << "  bias " << gyr_x->getAvgValue() / 3600 << " degree/s" << std::endl;
-    std::cout << "-------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 
     std::cout << "陀螺仪 y " << std::endl;
     imu::FitAllanGyr fit_gyr_y(gyro_v_y, gyro_ts_y, gyr_y->getFreq());
     std::cout << "  bias " << gyr_y->getAvgValue() / 3600 << " degree/s" << std::endl;
-    std::cout << "-------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 
     std::cout << "陀螺仪 z " << std::endl;
     imu::FitAllanGyr fit_gyr_z(gyro_v_z, gyro_ts_z, gyr_z->getFreq());
     std::cout << "  bias " << gyr_z->getAvgValue() / 3600 << " degree/s" << std::endl;
-    std::cout << "-------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 
     std::vector<double> gyro_sim_d_x = fit_gyr_x.calcSimDeviation(gyro_ts_x);
     std::vector<double> gyro_sim_d_y = fit_gyr_y.calcSimDeviation(gyro_ts_y);
@@ -277,8 +279,7 @@ int main(int argc, char** argv)
     writeData3(IMU_NAME + "_sim_gyr", gyro_ts_x, gyro_sim_d_x, gyro_sim_d_y, gyro_sim_d_z);
     writeData3(IMU_NAME + "_gyr", gyro_ts_x, gyro_d_x, gyro_d_y, gyro_d_z);
 
-    std::cout << "==============================================" << std::endl;
-    std::cout << "==============================================" << std::endl;
+    std::cout << "****************************************" << std::endl;
 
     acc_x->calc();
     std::vector<double> acc_v_x = acc_x->getVariance();
@@ -297,19 +298,21 @@ int main(int argc, char** argv)
 
     std::cout << "加速计 X " << std::endl;
     imu::FitAllanAcc fit_acc_x(acc_v_x, acc_ts_x, acc_x->getFreq());
-    std::cout << "-------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 
     std::cout << "加速计 y " << std::endl;
     imu::FitAllanAcc fit_acc_y(acc_v_y, acc_ts_y, acc_y->getFreq());
-    std::cout << "-------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 
     std::cout << "加速计 z " << std::endl;
     imu::FitAllanAcc fit_acc_z(acc_v_z, acc_ts_z, acc_z->getFreq());
-    std::cout << "-------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 
     std::vector<double> acc_sim_d_x = fit_acc_x.calcSimDeviation(acc_ts_x);
     std::vector<double> acc_sim_d_y = fit_acc_y.calcSimDeviation(acc_ts_x);
     std::vector<double> acc_sim_d_z = fit_acc_z.calcSimDeviation(acc_ts_x);
+
+    std::cout << "****************************************" << std::endl;
 
     writeData3(IMU_NAME + "_sim_acc", acc_ts_x, acc_sim_d_x, acc_sim_d_y, acc_sim_d_z);
 

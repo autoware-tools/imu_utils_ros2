@@ -6,7 +6,7 @@ imu::AllanGyr::AllanGyr(std::string name, int maxCluster)
       , numCluster(maxCluster)
 {
     std::cout << m_name << " "
-        << " num of Cluster " << numCluster << std::endl;
+        << " 集群数量 " << numCluster << std::endl;
 }
 
 imu::AllanGyr::~AllanGyr()
@@ -40,35 +40,35 @@ imu::AllanGyr::pushDegreePerHou(double data, double time)
 void
 imu::AllanGyr::calc()
 {
-    std::cout << m_name << " "
-        << " numData " << numData << std::endl;
+    std::cout << "****************************************" << std::endl;
+
+    std::cout << m_name << " " << " 条数 " << numData << std::endl;
+
     if (numData < 10000)
-        std::cout << m_name << " "
-            << " Too few number" << std::endl;
+        std::cout << m_name << " " << " 数量太少!!!" << std::endl;
 
     double start_t = m_rawData.begin()->t;
+
     double end_t = m_rawData[numData - 1].t;
+
+    std::cout << m_name << " " << " 开始时间 " << start_t << std::endl;
+
+    std::cout << m_name << " " << " 结束时间 " << end_t << std::endl;
+
     std::cout << m_name << " "
-        << " start_t " << start_t << std::endl;
-    std::cout << m_name << " "
-        << " end_t " << end_t << std::endl;
-    std::cout << m_name << " "
-        << "dt " << std::endl //
-        << "-------------" << (end_t - start_t) << " s" << std::endl
-        << "-------------" << (end_t - start_t) / 60 << " min" << std::endl
-        << "-------------" << (end_t - start_t) / 3600 << " h" << std::endl;
+        << " 用时 " << std::endl
+        << "-------------" << (end_t - start_t) << " 秒" << std::endl
+        << "-------------" << (end_t - start_t) / 60 << " 分" << std::endl
+        << "-------------" << (end_t - start_t) / 3600 << " 小时" << std::endl;
 
     if ((end_t - start_t) / 60 < 10)
-        std::cout << m_name << " "
-            << " Too short time!!!!" << std::endl;
+        std::cout << m_name << " " << " 时间太短!!!" << std::endl;
 
     m_freq = getAvgFreq();
-    std::cout << m_name << " "
-        << " freq " << m_freq << std::endl;
+    std::cout << m_name << " " << " 频率 " << m_freq << std::endl;
 
     double period = getAvgPeriod();
-    std::cout << m_name << " "
-        << " period " << period << std::endl;
+    std::cout << m_name << " " << " 周期 " << period << std::endl;
 
     m_thetas = calcThetas(m_freq);
 
