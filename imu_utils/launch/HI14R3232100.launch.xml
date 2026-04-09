@@ -1,13 +1,13 @@
 <launch>
 
-    <node pkg="hipnuc_imu" name="hipnuc_imu_node" exec="hipnuc_imu_node" output="both">
+    <!-- <node pkg="hipnuc_imu" name="hipnuc_imu_node" exec="hipnuc_imu_node" output="both">
         <param name="imu_topic" value="/sensing/imu/imu_raw"/>
         <param name="serial_port" value="/dev/ttyUSB_IMU0"/>
         <param name="baud_rate" value="230400"/>
         <param name="timer_period_ms" value="5"/>
         <param name="use_pps_sync_time" value="false"/>
         <param name="frame_id" value="imu_link"/>
-    </node>
+    </node> -->
 
     <node pkg="imu_utils" exec="imu_an" name="imu_an" output="both">
         <param name="imu_topic" value="/sensing/imu/imu_raw"/>
