@@ -36,8 +36,7 @@ int max_time_min = 10;
 std::string data_save_path;
 
 
-void
-imu_callback(const sensor_msgs::msg::Imu::SharedPtr imu_msg)
+void imu_callback(const sensor_msgs::msg::Imu::SharedPtr imu_msg)
 {
     const double time = imu_msg->header.stamp.sec + imu_msg->header.stamp.nanosec * 1e-9;
     gyr_x->pushRadPerSec(imu_msg->angular_velocity.x, time);
@@ -61,10 +60,9 @@ imu_callback(const sensor_msgs::msg::Imu::SharedPtr imu_msg)
     }
 }
 
-void
-writeData1(const std::string sensor_name, //
-           const std::vector<double>& gyro_ts_x,
-           const std::vector<double>& gyro_d)
+void writeData1(const std::string sensor_name,
+                const std::vector<double>& gyro_ts_x,
+                const std::vector<double>& gyro_d)
 {
     std::ofstream out_t;
     std::ofstream out_x;
@@ -82,10 +80,10 @@ writeData1(const std::string sensor_name, //
 }
 
 void writeData3(const std::string sensor_name,
-           const std::vector<double>& gyro_ts_x,
-           const std::vector<double>& gyro_d_x,
-           const std::vector<double>& gyro_d_y,
-           const std::vector<double>& gyro_d_z)
+                const std::vector<double>& gyro_ts_x,
+                const std::vector<double>& gyro_d_x,
+                const std::vector<double>& gyro_d_y,
+                const std::vector<double>& gyro_d_z)
 {
     std::ofstream out_t;
     std::ofstream out_x;
@@ -114,15 +112,14 @@ void writeData3(const std::string sensor_name,
     out_z.close();
 }
 
-void
-writeYAML(const std::string data_path,
-          const std::string sensor_name,
-          const imu::FitAllanGyr& gyr_x,
-          const imu::FitAllanGyr& gyr_y,
-          const imu::FitAllanGyr& gyr_z,
-          const imu::FitAllanAcc& acc_x,
-          const imu::FitAllanAcc& acc_y,
-          const imu::FitAllanAcc& acc_z)
+void writeYAML(const std::string data_path,
+               const std::string sensor_name,
+               const imu::FitAllanGyr& gyr_x,
+               const imu::FitAllanGyr& gyr_y,
+               const imu::FitAllanGyr& gyr_z,
+               const imu::FitAllanAcc& acc_x,
+               const imu::FitAllanAcc& acc_y,
+               const imu::FitAllanAcc& acc_z)
 {
     cv::FileStorage fs(data_path + sensor_name + "_imu_param.yaml", cv::FileStorage::WRITE);
 
@@ -217,7 +214,10 @@ int main(int argc, char** argv)
     max_time_min = ros_utils::readParam<int>(*n, "max_time_min");
     max_cluster = ros_utils::readParam<int>(*n, "max_cluster");
 
-    auto sub_imu = n->create_subscription<sensor_msgs::msg::Imu>(IMU_TOPIC, rclcpp::QoS(rclcpp::KeepLast(2000)), imu_callback);
+    auto sub_imu = n->create_subscription<sensor_msgs::msg::Imu>(
+        IMU_TOPIC,
+        rclcpp::QoS(rclcpp::KeepLast(2000)),
+        imu_callback);
 
     gyr_x = new imu::AllanGyr("gyr x", max_cluster);
     gyr_y = new imu::AllanGyr("gyr y", max_cluster);
@@ -225,12 +225,13 @@ int main(int argc, char** argv)
     acc_x = new imu::AllanAcc("acc x", max_cluster);
     acc_y = new imu::AllanAcc("acc y", max_cluster);
     acc_z = new imu::AllanAcc("acc z", max_cluster);
-    std::cout << "wait for imu data." << std::endl;
+
+    std::cout << "等待IMU数据, 最多需要 " << max_time_min << " 分钟数据..." << std::endl;
 
     rclcpp::Rate loop(100);
 
-    //ros::spin( );
-    std::cout << end << std::endl;
+    std::cout << "结束标志:" << (end ? "true" : "false") << std::endl;
+
     while (rclcpp::ok() && !end)
     {
         loop.sleep();
@@ -238,7 +239,7 @@ int main(int argc, char** argv)
     }
 
     std::cout << "rclcpp ok: " << rclcpp::ok() << std::endl;
-    ///
+
     gyr_x->calc();
     std::vector<double> gyro_v_x = gyr_x->getVariance();
     std::vector<double> gyro_d_x = gyr_x->getDeviation();
@@ -254,17 +255,17 @@ int main(int argc, char** argv)
     std::vector<double> gyro_d_z = gyr_z->getDeviation();
     std::vector<double> gyro_ts_z = gyr_z->getTimes();
 
-    std::cout << "Gyro X " << std::endl;
+    std::cout << "陀螺仪 X " << std::endl;
     imu::FitAllanGyr fit_gyr_x(gyro_v_x, gyro_ts_x, gyr_x->getFreq());
     std::cout << "  bias " << gyr_x->getAvgValue() / 3600 << " degree/s" << std::endl;
     std::cout << "-------------------" << std::endl;
 
-    std::cout << "Gyro y " << std::endl;
+    std::cout << "陀螺仪 y " << std::endl;
     imu::FitAllanGyr fit_gyr_y(gyro_v_y, gyro_ts_y, gyr_y->getFreq());
     std::cout << "  bias " << gyr_y->getAvgValue() / 3600 << " degree/s" << std::endl;
     std::cout << "-------------------" << std::endl;
 
-    std::cout << "Gyro z " << std::endl;
+    std::cout << "陀螺仪 z " << std::endl;
     imu::FitAllanGyr fit_gyr_z(gyro_v_z, gyro_ts_z, gyr_z->getFreq());
     std::cout << "  bias " << gyr_z->getAvgValue() / 3600 << " degree/s" << std::endl;
     std::cout << "-------------------" << std::endl;
@@ -294,15 +295,15 @@ int main(int argc, char** argv)
     std::vector<double> acc_d_z = acc_z->getDeviation();
     std::vector<double> acc_ts_z = acc_z->getTimes();
 
-    std::cout << "acc X " << std::endl;
+    std::cout << "加速计 X " << std::endl;
     imu::FitAllanAcc fit_acc_x(acc_v_x, acc_ts_x, acc_x->getFreq());
     std::cout << "-------------------" << std::endl;
 
-    std::cout << "acc y " << std::endl;
+    std::cout << "加速计 y " << std::endl;
     imu::FitAllanAcc fit_acc_y(acc_v_y, acc_ts_y, acc_y->getFreq());
     std::cout << "-------------------" << std::endl;
 
-    std::cout << "acc z " << std::endl;
+    std::cout << "加速计 z " << std::endl;
     imu::FitAllanAcc fit_acc_z(acc_v_z, acc_ts_z, acc_z->getFreq());
     std::cout << "-------------------" << std::endl;
 
@@ -311,9 +312,12 @@ int main(int argc, char** argv)
     std::vector<double> acc_sim_d_z = fit_acc_z.calcSimDeviation(acc_ts_x);
 
     writeData3(IMU_NAME + "_sim_acc", acc_ts_x, acc_sim_d_x, acc_sim_d_y, acc_sim_d_z);
+
     writeData3(IMU_NAME + "_acc", acc_ts_x, acc_d_x, acc_d_y, acc_d_z);
 
     writeYAML(data_save_path, IMU_NAME, fit_gyr_x, fit_gyr_y, fit_gyr_z, fit_acc_x, fit_acc_y, fit_acc_z);
+
+    std::cout << "数据已保存完毕，可安全退出，保存位置: " << data_save_path.c_str() << std::endl;
 
     return 0;
 }
