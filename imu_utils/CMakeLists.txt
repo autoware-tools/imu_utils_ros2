@@ -20,38 +20,59 @@ find_package(Ceres REQUIRED)
 find_package(Boost REQUIRED)
 find_package(VTK REQUIRED)
 find_package(Iconv REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS}
-                    ${EIGEN3_INCLUDE_DIR}
-                    ${CERES_INCLUDE_DIRS}
-                    ${Boost_INCLUDE_DIRS}
-                    "../code_utils/include")
 
+# 关键：屏蔽系统 glog，避免与 Autoware 冲突
+add_definitions(-DGOOGLE_GLOG_DLL_DECL=)
+add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
+
+include_directories(
+  ${OpenCV_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+  ${CERES_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ../code_utils/include
+)
 
 set(ACC_LIB_SOURCE_FILES
-    ${PROJECT_SOURCE_DIR}/src/acc_lib/allan_acc.cpp
-    ${PROJECT_SOURCE_DIR}/src/acc_lib/fitallan_acc.cpp
-    )
+  ${PROJECT_SOURCE_DIR}/src/acc_lib/allan_acc.cpp
+  ${PROJECT_SOURCE_DIR}/src/acc_lib/fitallan_acc.cpp
+)
 set(GYR_LIB_SOURCE_FILES
-    ${PROJECT_SOURCE_DIR}/src/gyr_lib/allan_gyr.cpp
-    ${PROJECT_SOURCE_DIR}/src/gyr_lib/fitallan_gyr.cpp
-    )
+  ${PROJECT_SOURCE_DIR}/src/gyr_lib/allan_gyr.cpp
+  ${PROJECT_SOURCE_DIR}/src/gyr_lib/fitallan_gyr.cpp
+)
 
 add_executable(imu_an
-    src/imu_an.cpp
-    ${GYR_LIB_SOURCE_FILES}
-    ${ACC_LIB_SOURCE_FILES}
-    )
-target_link_libraries(imu_an ${OpenCV_LIBS} ${CERES_LIBRARIES})
-ament_target_dependencies(imu_an rclcpp sensor_msgs geometry_msgs code_utils cv_bridge message_filters)
+  src/imu_an.cpp
+  ${GYR_LIB_SOURCE_FILES}
+  ${ACC_LIB_SOURCE_FILES}
+)
+
+# 核心修复：不强制链接 glog，避免重复
+target_link_libraries(imu_an
+  ${OpenCV_LIBS}
+  ${CERES_LIBRARIES}
+  ${Boost_LIBRARIES}
+  -Wl,--exclude-libs,glog  # 屏蔽重复的glog符号
+)
+
+ament_target_dependencies(imu_an
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  code_utils
+  cv_bridge
+  message_filters
+)
 
 install(
-    DIRECTORY launch
-    DESTINATION share/${PROJECT_NAME}
-    )
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 install(
-    TARGETS imu_an
-    DESTINATION lib/${PROJECT_NAME}
-    )
-    
+  TARGETS imu_an
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()
