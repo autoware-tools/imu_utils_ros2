@@ -39,10 +39,7 @@ std::string data_save_path;
 void
 imu_callback(const sensor_msgs::msg::Imu::SharedPtr imu_msg)
 {
-    //    m_buf.lock( );
-    //    imu_buf.push( imu_msg );
-    //    m_buf.unlock( );
-    double time = imu_msg->header.stamp.sec + imu_msg->header.stamp.nanosec * 1e-9;
+    const double time = imu_msg->header.stamp.sec + imu_msg->header.stamp.nanosec * 1e-9;
     gyr_x->pushRadPerSec(imu_msg->angular_velocity.x, time);
     gyr_y->pushRadPerSec(imu_msg->angular_velocity.y, time);
     gyr_z->pushRadPerSec(imu_msg->angular_velocity.z, time);
@@ -57,7 +54,8 @@ imu_callback(const sensor_msgs::msg::Imu::SharedPtr imu_msg)
     }
     else
     {
-        double time_min = (time - start_t) / 60;
+        const double time_min = (time - start_t) / 60;
+
         if (time_min > max_time_min)
             end = true;
     }
@@ -83,8 +81,7 @@ writeData1(const std::string sensor_name, //
     out_x.close();
 }
 
-void
-writeData3(const std::string sensor_name,
+void writeData3(const std::string sensor_name,
            const std::vector<double>& gyro_ts_x,
            const std::vector<double>& gyro_d_x,
            const std::vector<double>& gyro_d_y,
@@ -220,10 +217,7 @@ int main(int argc, char** argv)
     max_time_min = ros_utils::readParam<int>(*n, "max_time_min");
     max_cluster = ros_utils::readParam<int>(*n, "max_cluster");
 
-    auto sub_imu = n->create_subscription<sensor_msgs::msg::Imu>(IMU_TOPIC,
-                                                                 rclcpp::QoS(rclcpp::KeepLast(2000)), imu_callback);
-    //    ros::Publisher pub = n.advertise< geometry_msgs::Vector3Stamped >( ALLAN_TOPIC,
-    //    2000 );
+    auto sub_imu = n->create_subscription<sensor_msgs::msg::Imu>(IMU_TOPIC, rclcpp::QoS(rclcpp::KeepLast(2000)), imu_callback);
 
     gyr_x = new imu::AllanGyr("gyr x", max_cluster);
     gyr_y = new imu::AllanGyr("gyr y", max_cluster);
@@ -235,7 +229,7 @@ int main(int argc, char** argv)
 
     rclcpp::Rate loop(100);
 
-    //    ros::spin( );
+    //ros::spin( );
     std::cout << end << std::endl;
     while (rclcpp::ok() && !end)
     {

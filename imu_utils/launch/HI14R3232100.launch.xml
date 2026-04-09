@@ -13,7 +13,7 @@
         <param name="imu_topic" value="/sensing/imu/imu_raw"/>
         <param name="imu_name" value="HI14R3232100"/>
         <param name="data_save_path" value="/home/cat/tomato-ros/imu_utils"/>
-        <param name="max_time_min" value="120"/>
+        <param name="max_time_min" value="1"/>
         <param name="max_cluster" value="100"/>
     </node>
 
