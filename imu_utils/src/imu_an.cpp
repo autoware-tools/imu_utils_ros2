@@ -320,6 +320,15 @@ int main(int argc, char** argv)
 
     writeYAML(data_save_path, IMU_NAME, fit_gyr_x, fit_gyr_y, fit_gyr_z, fit_acc_x, fit_acc_y, fit_acc_z);
 
+    std::cout << "********************(liosam_param.yaml)********************" << std::endl;
+
+    std::cout << "imuAccNoise:" << (fit_acc_x.getWhiteNoise() + fit_acc_x.getWhiteNoise() + fit_acc_x.getWhiteNoise()) / 3 <<std::endl;
+    std::cout << "imuGyrNoise:" << (fit_gyr_x.getWhiteNoise() + fit_gyr_y.getWhiteNoise() + fit_gyr_z.getWhiteNoise()) / 3 << std::endl;
+    std::cout << "imuAccBiasN:" << (fit_acc_x.getBiasInstability() + fit_acc_x.getBiasInstability() + fit_acc_x.getBiasInstability()) / 3 << std::endl;
+    std::cout << "imuGyrBiasN:" << (fit_gyr_x.getBiasInstability() + fit_gyr_y.getBiasInstability() + fit_gyr_z.getBiasInstability()) / 3 << std::endl;
+
+    std::cout << "****************************************" << std::endl;
+
     std::cout << "数据已保存完毕，可安全退出，保存位置: " << data_save_path.c_str() << std::endl;
 
     return 0;
