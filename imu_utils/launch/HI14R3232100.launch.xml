@@ -1,20 +1,34 @@
+<?xml version="1.0"?>
 <launch>
 
-    <node pkg="hipnuc_imu" name="hipnuc_imu_node" exec="hipnuc_imu_node" output="both">
-        <param name="imu_topic" value="/sensing/imu/imu_raw"/>
-        <param name="serial_port" value="/dev/ttyUSB_IMU0"/>
-        <param name="baud_rate" value="230400"/>
-        <param name="timer_period_ms" value="5"/>
-        <param name="use_pps_sync_time" value="false"/>
-        <param name="frame_id" value="imu_link"/>
+    <arg name="launch_imu" default="true"/>
+    <arg name="launch_imu_utils" default="true"/>
+    <arg name="data_save_path" default="/home/cat/tomato-ros/imu_utils/"/>
+    <arg name="max_time_min" default="120"/>
+    <arg name="max_cluster" default="100"/>
+    <arg name="imu_name" default="HI14R3232100"/>
+    <arg name="imu_topic" default="/sensing/imu/imu_raw"/>
+    <arg name="serial_port" default="/dev/ttyUSB_IMU0"/>
+    <arg name="baud_rate" default="230400"/>
+    <arg name="timer_period_ms" default="5"/>
+    <arg name="use_pps_sync_time" default="false"/>
+    <arg name="frame_id" default="imu_link"/>
+
+    <node pkg="hipnuc_imu" name="hipnuc_imu_node" exec="hipnuc_imu_node" output="both" if="$(var launch_imu)">
+        <param name="imu_topic" value="$(var imu_topic)"/>
+        <param name="serial_port" value="$(var serial_port)"/>
+        <param name="baud_rate" value="$(var baud_rate)"/>
+        <param name="timer_period_ms" value="$(var timer_period_ms)"/>
+        <param name="use_pps_sync_time" value="$(var use_pps_sync_time)"/>
+        <param name="frame_id" value="$(var frame_id)"/>
     </node>
 
-    <node pkg="imu_utils" exec="imu_an" name="imu_an" output="both">
-        <param name="imu_topic" value="/sensing/imu/imu_raw"/>
-        <param name="imu_name" value="HI14R3232100"/>
-        <param name="data_save_path" value="/home/cat/tomato-ros/imu_utils/"/>
-        <param name="max_time_min" value="1"/>
-        <param name="max_cluster" value="100"/>
+    <node pkg="imu_utils" exec="imu_an" name="imu_an" output="both" if="$(var launch_imu_utils)">
+        <param name="imu_topic" value="$(var imu_topic)"/>
+        <param name="imu_name" value="$(var imu_name)"/>
+        <param name="data_save_path" value="$(var data_save_path)"/>
+        <param name="max_time_min" value="$(var max_time_min)"/>
+        <param name="max_cluster" value="$(var max_cluster)"/>
     </node>
 
 </launch>
