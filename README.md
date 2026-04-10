@@ -48,3 +48,25 @@ ros2 launch imu_utils HI14R3232100.launch.xml \
     launch_imu_utils:=true
 
 ```
+
+## 关于作者
+
+公众号《番茄ROS机器人》作者，长期致力于 ROS2 与 Autoware 框架下的低速无人驾驶解决方案研发，专注技术实战与经验沉淀，分享低速无人系统开发中的技术难点、解决方案与行业思考，与开发者共同推动低速无人驾驶技术的落地与创新。
+
+## 关注作者
+
+### 微信号
+
+- 微信号：**smartros**
+- 二维码：
+
+![img](image/smartros.jpg "添加《番茄ROS机器人》微信号好友")
+
+### 公众号
+
+![img](image/tomato-ros.png "关注公众号《番茄ROS机器人》")
+
+### 视频号
+
+![img](image/tomato-ros-video.png "关注视频号《番茄ROS特种机器人》")
+
